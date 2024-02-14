@@ -1,7 +1,17 @@
+@php
+    $parsedown = new Parsedown();
+@endphp
 
 @extends('layout')
 
 @section('content')
+
+<!-- 記事画面 -->
+<head>
+  <link href="{{ asset('css/main.css') }}" rel="stylesheet">
+</head>
+
+<!-- タイトル/メタデータ -->
 <div class="banner">
   <div class="container">
     <h1>{{ $article->title }}</h1>
@@ -10,7 +20,7 @@
       <a href="/profile/eric-simons"><img src="http://i.imgur.com/Qr71crq.jpg" /></a>
       <div class="info">
         <a href="/profile/eric-simons" class="author">Eric Simons</a>
-        <span class="date">January 20th</span>
+        <span class="date">{{ $article->created_at->format('F j, Y') }}</span>
       </div>
       <button class="btn btn-sm btn-outline-secondary">
         <i class="ion-plus-round"></i>
@@ -21,36 +31,65 @@
         <i class="ion-heart"></i>
         &nbsp; Favorite Post <span class="counter">(29)</span>
       </button>
-      <button class="btn btn-sm btn-outline-secondary">
+      <a href="{{ route('articles.edit', $article->id) }}" class="btn btn-sm btn-outline-secondary">
         <i class="ion-edit"></i> Edit Article
-      </button>
-      <button class="btn btn-sm btn-outline-danger">
-        <i class="ion-trash-a"></i> Delete Article
-      </button>
+      </a>
+      <form action="{{ route('articles.destroy', $article->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-sm btn-outline-danger" id="deletebtn">
+            <i class="ion-trash-a"></i> Delete Article
+        </button>
+      </form>
     </div>
   </div>
 </div>
 
+<!-- 記事内容 -->
 <div class="container page">
 
   <div class="card-text">
-    <p>{{ $article->body }}</p>
-
+    {!! $parsedown->text($article->body) !!}
   </div>
 
   <div class="tags">
     <ul class="tag-list">
-          <li class="tag-default tag-pill tag-outline">realworld</li>
-          <li class="tag-default tag-pill tag-outline">implementations</li>
+          @foreach ($article->tags as $tag)
+              <li class="tag-default tag-pill tag-outline">{{ $tag->name }}</li>
+          @endforeach
     </ul>
   </div>
 
-  <form class="card comment-form">
-    <div class="card-block">
-      <textarea class="form-control" placeholder="Write a comment..." rows="3"></textarea>
-      <button class="btn btn-sm btn-primary">Post Comment</button>
-    </div>  
-  </form>
+  <!-- コメントフォーム -->
+  <div class="card-block">
+    <form method="POST" action="{{ route('comments.store') }}">
+      @csrf
+      <input type="hidden" name="article_id" value="{{ $article->id }}">
+      <div class="form-group">
+          <textarea name="body" class="form-control" rows="3" placeholder="Write a comment..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+  </div>
+
+  <!-- コメント -->
+  @foreach ($article->comments as $comment)
+    <div class="card">
+      <div class="card-block">
+        <p class="card-text">{{ $comment->body }}</p>
+      </div>
+      <div class="card-footer">
+        <a href="/profile/author" class="comment-author">
+          <!-- <img src="#" class="comment-author-img" />　投稿者のプロフィール画像 -->
+        </a>
+        &nbsp;
+        <a href="/profile/jacob-schmidt" class="comment-author">Jacob Schmidt</a>
+        <span class="date-posted">{{ $comment->created_at->format('F j, Y') }}</span>
+        <span class="mod-options">
+          <i class="ion-trash-a"></i>
+        </span>
+    </div>
+  @endforeach
 
 </div>
 
