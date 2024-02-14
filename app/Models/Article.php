@@ -7,6 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Article extends Model
 {
-    protected $fillable = ['title','description', 'body'];
+    protected $fillable = ['title','description','body'];
     use HasFactory;
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    public function comments()
+    {
+    return $this->hasMany(Comment::class);
+    }
+
 }

@@ -5,9 +5,6 @@
 <div class="container page">
   <div class="row">
     <div class="col-md-10 offset-md-1 col-xs-12">
-      <ul class="error-messages">
-        <li>That title is required</li>
-      </ul>
 
       <form method="POST" action="{{ route('articles.store') }}">
         @csrf
@@ -28,10 +25,7 @@
             ></textarea>
           </fieldset>
           <fieldset class="form-group">
-            <input type="text" class="form-control" placeholder="Enter tags" />
-            <div class="tag-list">
-              <span class="tag-default tag-pill"> <i class="ion-close-round"></i> tag </span>
-            </div>
+            <input type="text" class="form-control" id="tags" name="tags"  placeholder="Enter tags" />
           </fieldset>
           <button class="btn btn-lg pull-xs-right btn-primary"  type="submit">
             Publish Article
