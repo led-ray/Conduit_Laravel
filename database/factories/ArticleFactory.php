@@ -20,10 +20,13 @@ class ArticleFactory extends Factory
      */
     public function definition()
     {
+        $title = $this->faker->sentence;
+
         return [
-            'title' => $this->faker->sentence,
-            'description' =>  $this->faker->realText(30),
+            'title' => $title,
+            'description' => $this->faker->realText(30),
             'body' => $this->faker->paragraph,
+            'slug' => \Illuminate\Support\Str::slug($title, '-')
         ];
     }
 }
