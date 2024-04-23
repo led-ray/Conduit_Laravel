@@ -1,1 +1,4 @@
-LaravelでConductを再現したプロダクトです
+LaravelとReactでConductを再現したプロダクトです。
+
+docker-compose.ymlの内容でDockerでコンテナを立ち上げ、
+localhostのポート番号8080でアクセスします。
